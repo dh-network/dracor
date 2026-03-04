@@ -14,71 +14,77 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:14px;line-height:1.5}
 
+/* ── Topbar ── */
 .topbar{background:var(--navy);color:#fff;display:flex;align-items:center;padding:0 2rem;height:52px;position:sticky;top:0;z-index:200;gap:1rem}
 .logo{font-family:'Source Serif 4',serif;font-size:1.3rem;font-weight:600}
 .logo span{color:var(--teal-lt)}
-.tagline{flex:1;font-size:.72rem;color:rgba(255,255,255,.45);font-style:italic}
-.hstats{display:flex;gap:1.5rem}
+.tagline{flex:1;font-size:.68rem;color:rgba(255,255,255,.4);font-style:italic}
+.hstats{display:flex;gap:1.8rem}
 .hs{display:flex;flex-direction:column;align-items:center}
-.hs-v{font-size:1rem;font-weight:700;line-height:1}
-.hs-l{font-size:.56rem;text-transform:uppercase;letter-spacing:.08em;opacity:.5}
+.hs-v{font-size:1.05rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.hs-l{font-size:.54rem;text-transform:uppercase;letter-spacing:.08em;opacity:.5}
 
-.page{max-width:1280px;margin:0 auto;padding:1.4rem 2rem;display:flex;flex-direction:column;gap:1.2rem}
+/* ── Layout ── */
+.page{max-width:1300px;margin:0 auto;padding:1.4rem 2rem;display:flex;flex-direction:column;gap:1.2rem}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
 @media(max-width:800px){.row2{grid-template-columns:1fr}}
 
+/* ── Cards ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.4rem;display:flex;flex-direction:column;gap:.75rem}
 .card-title{font-family:'Source Serif 4',serif;font-size:.95rem;font-weight:600;color:var(--navy)}
-.card-sub{font-size:.68rem;color:var(--muted);margin-top:.05rem}
+.card-sub{font-size:.67rem;color:var(--muted);margin-top:.04rem}
 
+/* ── Chips ── */
 .chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{padding:.2rem .55rem;border-radius:20px;border:1px solid var(--border);background:#fff;color:var(--muted);font-size:.67rem;font-weight:600;cursor:pointer;transition:all .12s;white-space:nowrap}
 .chip:hover{border-color:var(--teal);color:var(--teal)}
 .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
-.chip:disabled{opacity:.4;cursor:default}
+.chip[disabled]{opacity:.35;cursor:default;pointer-events:none}
 
+/* ── Loading / Error ── */
 .loading{display:flex;align-items:center;justify-content:center;gap:.7rem;min-height:100px;color:var(--muted);font-size:.8rem}
 .spinner{width:22px;height:22px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .err{color:#c0392b;background:#fdf0ef;border:1px solid #f5c6c2;border-radius:6px;padding:.45rem .75rem;font-size:.78rem;width:100%}
 
-/* pie */
+/* ── Pie ── */
 .pie-wrap{display:flex;align-items:center;gap:1.5rem}
-.pie-leg{flex:1;display:flex;flex-direction:column;gap:.26rem;max-height:210px;overflow-y:auto}
+.pie-leg{flex:1;display:flex;flex-direction:column;gap:.26rem;max-height:215px;overflow-y:auto}
 .li{display:flex;align-items:center;gap:.4rem;font-size:.7rem}
 .li-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .li-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .li-val{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 
-/* gender */
-.gv-label{font-size:.64rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.28rem}
+/* ── Gender ── */
+.gv-block{margin-bottom:.1rem}
+.gv-label{font-size:.63rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.28rem}
 .gv-track{display:flex;height:26px;border-radius:5px;overflow:hidden}
 .gv-seg{display:flex;align-items:center;justify-content:center;transition:width .4s}
-.gv-seg span{font-size:.62rem;font-weight:600;color:#fff;padding:0 .25rem;white-space:nowrap}
-.gv-legend{display:flex;gap:.75rem;margin-top:.25rem;flex-wrap:wrap;font-size:.64rem;color:var(--muted)}
+.gv-seg span{font-size:.61rem;font-weight:600;color:#fff;padding:0 .25rem;white-space:nowrap}
+.gv-legend{display:flex;gap:.75rem;margin-top:.25rem;flex-wrap:wrap;font-size:.63rem;color:var(--muted)}
 .gv-legend strong{color:var(--navy)}
-.gv-divider{border:none;border-top:1px solid var(--border);margin:.5rem 0}
+.gv-divider{border:none;border-top:1px solid var(--border);margin:.6rem 0}
 
-/* authors */
+/* ── Authors ── */
 .rtable{width:100%;border-collapse:collapse;font-size:.78rem}
-.rtable th{padding:.26rem .42rem;text-align:left;font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:2px solid var(--border)}
+.rtable th{padding:.26rem .42rem;text-align:left;font-size:.59rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:2px solid var(--border)}
 .rtable td{padding:.26rem .42rem;border-bottom:1px solid var(--bg)}
 .rtable tr:last-child td{border-bottom:none}
 .rbar{height:5px;background:var(--teal-lt);border-radius:3px}
 
-/* browser */
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:.5rem;max-height:360px;overflow-y:auto}
-.ccard{border:1px solid var(--border);border-radius:7px;padding:.58rem .68rem;background:#FAFCFD;transition:border .12s,background .12s;position:relative;overflow:hidden}
-.ccard:before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--teal);opacity:0;transition:opacity .12s}
+/* ── Corpus Browser grid ── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:.55rem;max-height:380px;overflow-y:auto}
+.ccard{border:1px solid var(--border);border-radius:7px;padding:.65rem .75rem;background:#FAFCFD;position:relative;overflow:hidden;transition:border .12s,background .12s}
+.ccard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--teal);opacity:0;transition:opacity .12s}
 .ccard:hover{border-color:var(--teal);background:var(--teal-bg)}
-.ccard:hover:before{opacity:1}
-.cc-acro{font-family:'Source Serif 4',serif;font-size:.78rem;font-weight:600;color:var(--teal);margin-bottom:.08rem}
-.cc-title{font-size:.64rem;color:var(--navy);font-weight:600;margin-bottom:.38rem;line-height:1.3}
-.cc-stats{display:flex;gap:.6rem;flex-wrap:wrap}
+.ccard:hover::before{opacity:1}
+.cc-acro{font-family:'Source Serif 4',serif;font-size:.8rem;font-weight:600;color:var(--teal);margin-bottom:.08rem}
+.cc-title{font-size:.65rem;color:var(--navy);font-weight:600;margin-bottom:.4rem;line-height:1.3}
+.cc-stats{display:flex;gap:.7rem;flex-wrap:wrap}
 .cc-s{display:flex;flex-direction:column}
-.cc-n{font-size:.8rem;font-weight:700;color:var(--navy);line-height:1}
+.cc-n{font-size:.82rem;font-weight:700;color:var(--navy);line-height:1;font-variant-numeric:tabular-nums}
 .cc-l{font-size:.52rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.gbar{height:4px;background:#E0ECF0;border-radius:2px;margin-top:.5rem;overflow:hidden;display:flex}
+.gbar{height:4px;background:#E0ECF0;border-radius:2px;margin-top:.55rem;overflow:hidden;display:flex}
 .gbar-m{background:var(--navy)}.gbar-f{background:var(--teal-lt)}
 </style>
 </head>
@@ -86,11 +92,12 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-ser
 
 <div class="topbar">
   <div class="logo">Dra<span>Cor</span></div>
-  <div class="tagline">All data fetched live from dracor.org/api/v1 — no hardcoded values</div>
+  <div class="tagline">All data fetched live from dracor.org/api/v1</div>
   <div class="hstats">
     <div class="hs"><div class="hs-v" id="hP">—</div><div class="hs-l">Plays</div></div>
     <div class="hs"><div class="hs-v" id="hC">—</div><div class="hs-l">Corpora</div></div>
     <div class="hs"><div class="hs-v" id="hCh">—</div><div class="hs-l">Characters</div></div>
+    <div class="hs"><div class="hs-v" id="hW">—</div><div class="hs-l">Spoken Words</div></div>
   </div>
 </div>
 
@@ -101,14 +108,15 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-ser
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
     <div class="card" id="card-gender">
-      <div><div class="card-title">Gender Balance</div><div class="card-sub">Characters — select corpus</div></div>
+      <div><div class="card-title">Gender Balance</div><div class="card-sub">Characters by gender — select corpus</div></div>
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
   </div>
 
   <div class="card" id="card-chrono">
-    <div><div class="card-title">Chronological Distribution</div>
-      <div class="card-sub">Plays per 25-year bin · each corpus loaded via <code style="font-size:.65rem">GET /corpora/{name}</code> · toggle to compare</div>
+    <div>
+      <div class="card-title">Chronological Distribution</div>
+      <div class="card-sub">Plays per 25-year bin — fetched live via <code style="font-size:.64rem">GET /corpora/{name}</code> — toggle corpora</div>
     </div>
     <div class="loading"><div class="spinner"></div>Loading…</div>
   </div>
@@ -119,137 +127,120 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-ser
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
     <div class="card" id="card-browser">
-      <div><div class="card-title">Corpus Browser</div><div class="card-sub">All corpora with metrics from API</div></div>
+      <div><div class="card-title">Corpus Browser</div><div class="card-sub">All corpora — live metrics</div></div>
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
   </div>
 </div>
 
 <script>
-// ─── CONFIG ────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// API
+// The /corpora endpoint returns { corpora: [...] }
+// Each corpus has metrics as FLAT numbers:
+//   metrics.plays      → total play count
+//   metrics.characters → total character count
+//   metrics.male       → male character count
+//   metrics.female     → female character count
+//   metrics.wordcount.sp → spoken word count
+//
+// /corpora/{name} returns { plays: [{yearNormalized, authors:[{name}], ...}] }
+// ═══════════════════════════════════════════════════════════════
+
 const BASE = 'https://dracor.org/api/v1';
 
 const PAL = [
   '#283B4C','#39A3B1','#E67E22','#8E44AD','#27AE60','#C0392B',
   '#2980B9','#D4AC0D','#16A085','#884EA0','#E74C3C','#1ABC9C',
   '#F39C12','#9B59B6','#3498DB','#1A5276','#117A65','#784212',
-  '#4A235A','#0E6655','#6E2F1A','#1B4F72','#7D6608','#78281F'
+  '#4A235A','#0E6655','#6E2F1A','#1B4F72','#7D6608','#78281F',
+  '#186A3B','#512E5F','#117A65'
 ];
 
-// ─── UTILS ─────────────────────────────────────────────────────────────────
 async function apiFetch(path) {
   const r = await fetch(BASE + path, { headers: { Accept: 'application/json' } });
-  if (!r.ok) throw new Error(`HTTP ${r.status}: ${BASE + path}`);
+  if (!r.ok) throw new Error(`HTTP ${r.status}: ${path}`);
   return r.json();
 }
 
-function fmt(n) {
-  if (!n) return '0';
-  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
-  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'k';
-  return String(n);
+// ── metric accessors (flat structure confirmed from live API) ──
+const mPlays  = c => c.metrics?.plays      ?? 0;
+const mChars  = c => c.metrics?.characters ?? 0;
+const mMale   = c => c.metrics?.male       ?? 0;
+const mFemale = c => c.metrics?.female     ?? 0;
+const mWords  = c => c.metrics?.wordcount?.sp ?? 0;
+
+function fmtExact(n) {
+  if (!n && n !== 0) return '—';
+  return Number(n).toLocaleString('en-US');
 }
 
-function shortName(c) {
-  return (c.acronym || c.name || '').replace(/dracor$/i,'').toUpperCase().slice(0,5) || c.name.slice(0,5).toUpperCase();
+function shortAcro(c) {
+  // Use the acronym field, strip "DraCor" suffix for display
+  const raw = c.acronym || c.name || '';
+  return raw.replace(/DraCor$/i, '').toUpperCase() || raw.slice(0,5).toUpperCase();
 }
 
-// Safely get play count from a corpus object returned by /corpora?include=metrics
-function playCount(c) {
-  const m = c.metrics;
-  if (!m) return 0;
-  // API returns metrics.plays as either a number or {total, ...}
-  if (typeof m.plays === 'number') return m.plays;
-  if (m.plays && typeof m.plays.total === 'number') return m.plays.total;
-  return 0;
-}
-
-function charCount(c) {
-  const m = c.metrics;
-  if (!m) return 0;
-  if (typeof m.characters === 'number') return m.characters;
-  if (m.characters && typeof m.characters.total === 'number') return m.characters.total;
-  return 0;
-}
-
-function charMale(c) {
-  const m = c.metrics?.characters;
-  if (!m) return 0;
-  return m.male ?? m.gender?.male ?? 0;
-}
-
-function charFemale(c) {
-  const m = c.metrics?.characters;
-  if (!m) return 0;
-  return m.female ?? m.gender?.female ?? 0;
-}
-
-// ─── CORPUS DETAIL CACHE ────────────────────────────────────────────────────
-// GET /corpora/{name} returns { name, title, plays: [{yearNormalized, authors, ...}] }
-const corpusDetailCache = {};
-
-async function getCorpusDetail(name) {
-  if (!corpusDetailCache[name]) {
-    const data = await apiFetch(`/corpora/${name}`);
-    // plays array lives either at root array or data.plays
-    const plays = Array.isArray(data) ? data : (data.plays || []);
-    corpusDetailCache[name] = plays;
-  }
-  return corpusDetailCache[name];
-}
-
-// ─── MAIN ──────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// MAIN
+// ═══════════════════════════════════════════════════════════════
 async function main() {
   let corpora;
   try {
-    corpora = await apiFetch('/corpora?include=metrics');
-  } catch (e) {
+    // NOTE: /corpora returns { corpora: [...] } — not a bare array
+    const resp = await apiFetch('/corpora?include=metrics');
+    corpora = resp.corpora ?? resp; // handle both shapes for safety
+  } catch(e) {
     document.querySelectorAll('.loading').forEach(el =>
       el.innerHTML = `<div class="err">⚠ Cannot reach DraCor API: ${e.message}</div>`);
     return;
   }
 
-  // Sort descending by play count
-  corpora.sort((a, b) => playCount(b) - playCount(a));
+  // Filter out test corpus, sort by play count desc
+  corpora = corpora.filter(c => c.name !== 'test');
+  corpora.sort((a, b) => mPlays(b) - mPlays(a));
 
-  // Top-bar totals (from /corpora metrics — no hardcoding)
-  const totalPlays = corpora.reduce((s, c) => s + playCount(c), 0);
-  const totalChars = corpora.reduce((s, c) => s + charCount(c), 0);
-  document.getElementById('hP').textContent  = fmt(totalPlays);
+  // ── Header stats (exact numbers) ──
+  const totalPlays = corpora.reduce((s,c) => s + mPlays(c), 0);
+  const totalChars = corpora.reduce((s,c) => s + mChars(c), 0);
+  const totalWords = corpora.reduce((s,c) => s + mWords(c), 0);
+  document.getElementById('hP').textContent  = fmtExact(totalPlays);
   document.getElementById('hC').textContent  = corpora.length;
-  document.getElementById('hCh').textContent = fmt(totalChars);
+  document.getElementById('hCh').textContent = fmtExact(totalChars);
+  document.getElementById('hW').textContent  = fmtExact(totalWords);
 
   buildPie(corpora);
   buildGender(corpora);
   buildBrowser(corpora);
-  // Chrono and Authors both require fetching full play lists — start async
-  buildChrono(corpora);
-  buildAuthors(corpora);
+  buildChrono(corpora);   // async, fetches play lists
+  buildAuthors(corpora);  // async, fetches play lists
 }
 
-// ─── 1. PIE ────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 1. PIE
+// ═══════════════════════════════════════════════════════════════
 function buildPie(corpora) {
   const top   = corpora.slice(0, 14);
-  const other = corpora.slice(14).reduce((s, c) => s + playCount(c), 0);
+  const other = corpora.slice(14).reduce((s,c) => s + mPlays(c), 0);
   const labels = [...top.map(c => c.title || c.name), ...(other ? ['Other'] : [])];
-  const data   = [...top.map(c => playCount(c)),       ...(other ? [other]   : [])];
+  const data   = [...top.map(c => mPlays(c)),          ...(other ? [other]   : [])];
   const colors = PAL.slice(0, labels.length);
 
   document.getElementById('card-pie').innerHTML = `
     <div><div class="card-title">Corpora at a Glance</div><div class="card-sub">Plays per corpus</div></div>
     <div class="pie-wrap">
-      <canvas id="pieCanvas" style="flex:0 0 195px;max-width:195px;max-height:195px"></canvas>
+      <canvas id="pieCanvas" style="flex:0 0 200px;max-width:200px;max-height:200px"></canvas>
       <div class="pie-leg" id="pieLeg"></div>
     </div>`;
 
   new Chart(document.getElementById('pieCanvas'), {
     type: 'pie',
-    data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: '#fff', borderWidth: 2, hoverOffset: 6 }] },
+    data: { labels, datasets:[{ data, backgroundColor:colors, borderColor:'#fff', borderWidth:2, hoverOffset:6 }] },
     options: {
-      animation: { duration: 450 },
+      animation: { duration:450 },
       plugins: {
-        legend: { display: false },
-        tooltip: { backgroundColor:'#283B4C', callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed.toLocaleString()} plays` } }
+        legend: { display:false },
+        tooltip: { backgroundColor:'#283B4C', callbacks:{ label: ctx => ` ${ctx.label}: ${ctx.parsed.toLocaleString()} plays` } }
       }
     }
   });
@@ -265,146 +256,135 @@ function buildPie(corpora) {
   });
 }
 
-// ─── 2. GENDER ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 2. GENDER
+// Uses flat metrics.male / metrics.female / metrics.characters
+// ═══════════════════════════════════════════════════════════════
 function buildGender(corpora) {
   const card = document.getElementById('card-gender');
   card.innerHTML = `
-    <div><div class="card-title">Gender Balance</div><div class="card-sub">Characters — select corpus</div></div>
+    <div><div class="card-title">Gender Balance</div><div class="card-sub">Characters by gender — select corpus</div></div>
     <div class="chips" id="gChips"></div>
     <div id="gViz"></div>`;
 
-  const chips = document.getElementById('gChips');
+  const chipsEl = document.getElementById('gChips');
   let active = corpora[0];
 
   corpora.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'chip' + (c === active ? ' on' : '');
-    btn.textContent = shortName(c);
+    btn.textContent = shortAcro(c);
     btn.title = c.title || c.name;
     btn.onclick = () => {
-      chips.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
+      chipsEl.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
       btn.classList.add('on');
       active = c;
-      renderGenderViz(c);
+      renderGender(c);
     };
-    chips.appendChild(btn);
+    chipsEl.appendChild(btn);
   });
 
-  renderGenderViz(active);
+  renderGender(active);
 }
 
-function renderGenderViz(c) {
-  const viz = document.getElementById('gViz');
-  if (!viz) return;
-
-  const male   = charMale(c);
-  const female = charFemale(c);
-  const total  = charCount(c);
-  const unk    = Math.max(0, total - male - female);
-
-  const authMale   = c.metrics?.authors?.male   ?? 0;
-  const authFemale = c.metrics?.authors?.female ?? 0;
-  const authTotal  = c.metrics?.authors?.total  ?? 0;
-  const authUnk    = Math.max(0, authTotal - authMale - authFemale);
-
-  viz.innerHTML =
-    genderBar('Characters', male, female, unk) +
-    (authTotal > 0 ? `<div class="gv-divider"></div>` + genderBar('Authors', authMale, authFemale, authUnk) : '');
-}
-
-function genderBar(label, m, f, u) {
-  const tot = m + f + u || 1;
-  const mp  = Math.round(m / tot * 100);
-  const fp  = Math.round(f / tot * 100);
-  const up  = 100 - mp - fp;
-  const lk  = n => n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n);
-  const seg = (pct, bg, txt) => pct > 0
+function genderBar(label, male, female, total) {
+  // total = metrics.characters (includes unknown/unspecified)
+  const unk  = Math.max(0, total - male - female);
+  const tot  = male + female + unk || 1;
+  const mp   = Math.round(male   / tot * 100);
+  const fp   = Math.round(female / tot * 100);
+  const up   = 100 - mp - fp;
+  const seg  = (pct, bg, txt) => pct > 0
     ? `<div class="gv-seg" style="width:${pct}%;background:${bg}">${pct >= 10 ? `<span>${txt} ${pct}%</span>` : ''}</div>`
     : '';
-  return `
-    <div style="margin-bottom:.1rem">
-      <div class="gv-label">${label}</div>
-      <div class="gv-track">
-        ${seg(mp,'#283B4C','♂')}${seg(fp,'#39A3B1','♀')}${seg(up,'#B0C8D0','?')}
-      </div>
-      <div class="gv-legend">
-        <span>♂ Male <strong>${lk(m)} · ${mp}%</strong></span>
-        <span>♀ Female <strong>${lk(f)} · ${fp}%</strong></span>
-        ${u > 0 ? `<span>? Unknown <strong>${lk(u)} · ${up}%</strong></span>` : ''}
-      </div>
-    </div>`;
+  return `<div class="gv-block">
+    <div class="gv-label">${label}</div>
+    <div class="gv-track">
+      ${seg(mp,'#283B4C','♂')}${seg(fp,'#39A3B1','♀')}${seg(up,'#B0C8D0','?')}
+    </div>
+    <div class="gv-legend">
+      <span>♂ Male <strong>${fmtExact(male)} · ${mp}%</strong></span>
+      <span>♀ Female <strong>${fmtExact(female)} · ${fp}%</strong></span>
+      ${unk > 0 ? `<span>? Unknown/Other <strong>${fmtExact(unk)} · ${up}%</strong></span>` : ''}
+    </div>
+  </div>`;
 }
 
-// ─── 3. CHRONOLOGICAL ─────────────────────────────────────────────────────
-// For each active corpus we call GET /corpora/{name} and read yearNormalized
-// from each play object. We compute 25-year bins entirely from this live data.
+function renderGender(c) {
+  const viz = document.getElementById('gViz');
+  if (!viz) return;
+  // All three values come from flat metrics fields
+  viz.innerHTML = genderBar('Characters', mMale(c), mFemale(c), mChars(c));
+}
 
-const chronoBins   = {};   // name → { "1600": 5, "1625": 3, … }
+// ═══════════════════════════════════════════════════════════════
+// 3. CHRONOLOGICAL
+// Fetches /corpora/{name} → {plays:[{yearNormalized}]}
+// Bins plays into 25-year buckets from API data
+// ═══════════════════════════════════════════════════════════════
+const binCache     = {};   // corpusName → { "1600": 5, ... }
+const playCache    = {};   // corpusName → plays[]
 let   chronoChart  = null;
 let   chronoActive = new Set();
-let   chronoCorpora = [];
-let   chronoChipsEl = null;
+let   gCorpora     = [];
+let   gChronoBtns  = {};
+
+async function fetchPlayList(name) {
+  if (playCache[name]) return playCache[name];
+  const data = await apiFetch(`/corpora/${name}`);
+  // /corpora/{name} returns { plays: [...], ... }
+  const plays = data.plays ?? (Array.isArray(data) ? data : []);
+  playCache[name] = plays;
+  return plays;
+}
+
+async function computeBins(name) {
+  if (binCache[name]) return;
+  const plays = await fetchPlayList(name);
+  const bins  = {};
+  plays.forEach(p => {
+    const raw = p.yearNormalized ?? p.yearWritten ?? p.yearPrinted ?? p.yearPremiered;
+    if (!raw) return;
+    const y = parseInt(raw, 10);
+    if (isNaN(y) || y <= 0 || y > 2100) return;
+    const key = String(Math.floor(y / 25) * 25);
+    bins[key] = (bins[key] || 0) + 1;
+  });
+  binCache[name] = bins;
+}
 
 async function buildChrono(corpora) {
-  chronoCorpora = corpora;
-  const card = document.getElementById('card-chrono');
-
-  // Pre-select 5 largest
+  gCorpora = corpora;
   corpora.slice(0, 5).forEach(c => chronoActive.add(c.name));
 
+  const card = document.getElementById('card-chrono');
   card.innerHTML = `
     <div>
       <div class="card-title">Chronological Distribution</div>
-      <div class="card-sub">Plays per 25-year bin · each corpus loaded via <code style="font-size:.65rem">GET /corpora/{name}</code> · toggle to compare</div>
+      <div class="card-sub">Plays per 25-year bin — fetched live via <code style="font-size:.64rem">GET /corpora/{name}</code> — toggle corpora</div>
     </div>
     <div class="chips" id="chronoChips"></div>
-    <div id="chronoArea" style="position:relative;min-height:80px">
-      <div class="loading" id="chronoSpinner"><div class="spinner"></div>Fetching play data from API…</div>
+    <div id="chronoArea" style="min-height:80px">
+      <div class="loading" id="chronoSpinner"><div class="spinner"></div>Fetching play data…</div>
       <canvas id="chronoCanvas" height="110" style="display:none"></canvas>
     </div>`;
 
-  chronoChipsEl = document.getElementById('chronoChips');
-
+  const chipsEl = document.getElementById('chronoChips');
   corpora.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'chip' + (chronoActive.has(c.name) ? ' on' : '');
-    btn.textContent = shortName(c);
-    btn.title = c.title || c.name;
-    btn.id = 'cc-' + c.name;
+    btn.textContent = shortAcro(c);
+    btn.title = `${c.title || c.name} (${mPlays(c)} plays)`;
+    gChronoBtns[c.name] = btn;
     btn.onclick = async () => {
-      if (chronoActive.has(c.name)) {
-        chronoActive.delete(c.name);
-        btn.classList.remove('on');
-      } else {
-        chronoActive.add(c.name);
-        btn.classList.add('on');
-      }
+      if (chronoActive.has(c.name)) { chronoActive.delete(c.name); btn.classList.remove('on'); }
+      else                          { chronoActive.add(c.name);    btn.classList.add('on'); }
       await refreshChrono();
     };
-    chronoChipsEl.appendChild(btn);
+    chipsEl.appendChild(btn);
   });
 
   await refreshChrono();
-}
-
-async function loadBins(name) {
-  if (chronoBins[name]) return;
-
-  // Fetch full corpus detail — plays array with yearNormalized per play
-  const plays = await getCorpusDetail(name);
-  const bins  = {};
-
-  plays.forEach(p => {
-    // yearNormalized is the canonical field; fall back to writtenYear / premiereYear
-    const raw = p.yearNormalized ?? p.writtenYear ?? p.premiereYear ?? p.printYear ?? null;
-    if (raw === null || raw === undefined) return;
-    const y = parseInt(raw, 10);
-    if (isNaN(y) || y < 0 || y > 2100) return;
-    const base = Math.floor(y / 25) * 25;           // 25-year bin
-    bins[String(base)] = (bins[String(base)] || 0) + 1;
-  });
-
-  chronoBins[name] = bins;
 }
 
 async function refreshChrono() {
@@ -412,41 +392,33 @@ async function refreshChrono() {
   const canvas  = document.getElementById('chronoCanvas');
   if (!spinner || !canvas) return;
 
-  // Disable chips while loading
-  if (chronoChipsEl) chronoChipsEl.querySelectorAll('.chip').forEach(b => b.disabled = true);
-
+  Object.values(gChronoBtns).forEach(b => b.disabled = true);
   spinner.style.display = 'flex';
   canvas.style.display  = 'none';
 
   try {
-    await Promise.all([...chronoActive].map(n => loadBins(n)));
-  } catch (e) {
+    await Promise.all([...chronoActive].map(n => computeBins(n)));
+  } catch(e) {
     spinner.innerHTML = `<div class="err">⚠ ${e.message}</div>`;
-    if (chronoChipsEl) chronoChipsEl.querySelectorAll('.chip').forEach(b => b.disabled = false);
+    Object.values(gChronoBtns).forEach(b => b.disabled = false);
     return;
   }
 
-  // Collect ALL bin keys actually present in data
-  const allBins = new Set();
-  [...chronoActive].forEach(n =>
-    Object.keys(chronoBins[n] || {}).forEach(b => allBins.add(b)));
-
-  const sorted = [...allBins].sort((a, b) => +a - +b);
-  const labels = sorted.map(b => `${b}–${+b + 24}`);
+  // Gather all bin keys that appear in any active corpus
+  const allKeys = new Set();
+  [...chronoActive].forEach(n => Object.keys(binCache[n] || {}).forEach(k => allKeys.add(k)));
+  const sortedKeys = [...allKeys].sort((a,b) => +a - +b);
+  const labels     = sortedKeys.map(k => `${k}–${+k+24}`);
 
   const datasets = [...chronoActive].map(name => {
-    const idx   = chronoCorpora.findIndex(c => c.name === name);
+    const idx   = gCorpora.findIndex(c => c.name === name);
     const color = PAL[idx % PAL.length];
-    const c     = chronoCorpora[idx];
     return {
-      label:           shortName(c),
-      data:            sorted.map(b => (chronoBins[name] || {})[b] || 0),
+      label:           shortAcro(gCorpora[idx]),
+      data:            sortedKeys.map(k => binCache[name]?.[k] || 0),
       borderColor:     color,
       backgroundColor: color + '22',
-      borderWidth:     2,
-      pointRadius:     3,
-      tension:         0.35,
-      fill:            false
+      borderWidth: 2, pointRadius: 3, tension: 0.35, fill: false
     };
   });
 
@@ -458,23 +430,25 @@ async function refreshChrono() {
     type: 'line',
     data: { labels, datasets },
     options: {
-      responsive: true,
-      animation: { duration: 350 },
+      responsive: true, animation: { duration: 350 },
       plugins: {
-        legend: { position: 'top', labels: { boxWidth: 10, font: { size: 11 } } },
-        tooltip: { backgroundColor: '#283B4C', titleColor: '#fff', bodyColor: '#fff', padding: 8, cornerRadius: 6 }
+        legend: { position:'top', labels:{ boxWidth:10, font:{size:11} } },
+        tooltip: { backgroundColor:'#283B4C', titleColor:'#fff', bodyColor:'#fff', padding:8, cornerRadius:6 }
       },
       scales: {
-        x: { grid: { color: 'rgba(0,0,0,.05)' }, ticks: { font: { size: 10 }, maxRotation: 50 } },
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.05)' }, ticks: { font: { size: 10 } } }
+        x: { grid:{ color:'rgba(0,0,0,.05)' }, ticks:{ font:{size:10}, maxRotation:50 } },
+        y: { beginAtZero:true, grid:{ color:'rgba(0,0,0,.05)' }, ticks:{ font:{size:10} } }
       }
     }
   });
 
-  if (chronoChipsEl) chronoChipsEl.querySelectorAll('.chip').forEach(b => b.disabled = false);
+  Object.values(gChronoBtns).forEach(b => b.disabled = false);
 }
 
-// ─── 4. AUTHORS ────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 4. AUTHORS
+// Fetches /corpora/{name} → plays[].authors[].name
+// ═══════════════════════════════════════════════════════════════
 const authorCache = {};
 
 async function buildAuthors(corpora) {
@@ -484,21 +458,21 @@ async function buildAuthors(corpora) {
     <div class="chips" id="authChips"></div>
     <div id="authArea"><div class="loading"><div class="spinner"></div>Loading…</div></div>`;
 
-  const chips = document.getElementById('authChips');
+  const chipsEl = document.getElementById('authChips');
   let activeName = corpora[0]?.name;
 
   corpora.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'chip' + (c.name === activeName ? ' on' : '');
-    btn.textContent = shortName(c);
+    btn.textContent = shortAcro(c);
     btn.title = c.title || c.name;
     btn.onclick = async () => {
-      chips.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
+      chipsEl.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
       btn.classList.add('on');
       activeName = c.name;
       await renderAuthors(c.name);
     };
-    chips.appendChild(btn);
+    chipsEl.appendChild(btn);
   });
 
   await renderAuthors(activeName);
@@ -511,16 +485,17 @@ async function renderAuthors(name) {
   if (!authorCache[name]) {
     area.innerHTML = `<div class="loading"><div class="spinner"></div>Fetching…</div>`;
     try {
-      const plays = await getCorpusDetail(name);
+      const plays = await fetchPlayList(name);
       const map   = {};
       plays.forEach(p => {
         (p.authors || []).forEach(a => {
+          // API returns authors as [{name: "Surname, Firstname", shortname: "Surname", ...}]
           const nm = a.name || a.fullname || (typeof a === 'string' ? a : null);
           if (nm) map[nm] = (map[nm] || 0) + 1;
         });
       });
-      authorCache[name] = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 15);
-    } catch (e) {
+      authorCache[name] = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0, 15);
+    } catch(e) {
       area.innerHTML = `<div class="err">⚠ ${e.message}</div>`;
       return;
     }
@@ -528,7 +503,7 @@ async function renderAuthors(name) {
 
   const rows = authorCache[name];
   if (!rows.length) {
-    area.innerHTML = `<p style="color:var(--muted);font-size:.78rem;padding:.4rem">No author data available.</p>`;
+    area.innerHTML = `<p style="color:var(--muted);font-size:.78rem;padding:.4rem">No author data found.</p>`;
     return;
   }
 
@@ -538,54 +513,72 @@ async function renderAuthors(name) {
       <thead><tr><th>#</th><th>Author</th><th style="text-align:right">Plays</th><th style="width:80px"></th></tr></thead>
       <tbody>${rows.map(([nm, cnt], i) => `
         <tr>
-          <td style="color:var(--muted);width:20px">${i + 1}</td>
+          <td style="color:var(--muted);width:20px">${i+1}</td>
           <td>${nm}</td>
           <td style="text-align:right;font-weight:600">${cnt}</td>
-          <td><div class="rbar" style="width:${Math.round(cnt / max * 100)}%"></div></td>
+          <td><div class="rbar" style="width:${Math.round(cnt/max*100)}%"></div></td>
         </tr>`).join('')}
       </tbody>
     </table>`;
 }
 
-// ─── 5. BROWSER ────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// 5. CORPUS BROWSER
+// All data from the /corpora?include=metrics call — no extra fetches
+// ═══════════════════════════════════════════════════════════════
 function buildBrowser(corpora) {
   const card = document.getElementById('card-browser');
   card.innerHTML = `
-    <div><div class="card-title">Corpus Browser</div><div class="card-sub">All corpora — data from /corpora?include=metrics</div></div>
+    <div><div class="card-title">Corpus Browser</div><div class="card-sub">All corpora — live metrics from API</div></div>
     <div class="cgrid" id="cgrid"></div>`;
 
   const grid = document.getElementById('cgrid');
   corpora.forEach(c => {
-    const plays = playCount(c);
-    const chars = charCount(c);
-    const m     = charMale(c);
-    const f     = charFemale(c);
-    const tot   = m + f || 1;
-    const mp    = Math.round(m / tot * 100);
+    const plays  = mPlays(c);
+    const chars  = mChars(c);
+    const male   = mMale(c);
+    const female = mFemale(c);
+    const words  = mWords(c);
+    const tot    = male + female || 1;
+    const mp     = Math.round(male   / tot * 100);
+    const fp     = 100 - mp;
+    const hasG   = male > 0 || female > 0;
 
     const div = document.createElement('div');
     div.className = 'ccard';
     div.innerHTML = `
-      <div class="cc-acro">${shortName(c)}</div>
+      <div class="cc-acro">${shortAcro(c)}</div>
       <div class="cc-title">${c.title || c.name}</div>
       <div class="cc-stats">
-        <div class="cc-s"><div class="cc-n">${plays.toLocaleString()}</div><div class="cc-l">plays</div></div>
-        ${chars ? `<div class="cc-s"><div class="cc-n">${fmt(chars)}</div><div class="cc-l">chars</div></div>` : ''}
+        <div class="cc-s">
+          <div class="cc-n">${plays.toLocaleString()}</div>
+          <div class="cc-l">plays</div>
+        </div>
+        <div class="cc-s">
+          <div class="cc-n">${chars.toLocaleString()}</div>
+          <div class="cc-l">chars</div>
+        </div>
+        ${words ? `<div class="cc-s">
+          <div class="cc-n">${words >= 1e6 ? (words/1e6).toFixed(1)+'M' : words >= 1e3 ? (words/1e3).toFixed(0)+'k' : words}</div>
+          <div class="cc-l">words</div>
+        </div>` : ''}
       </div>
-      ${(m || f) ? `
+      ${hasG ? `
       <div class="gbar">
         <div class="gbar-m" style="width:${mp}%"></div>
-        <div class="gbar-f" style="width:${100 - mp}%"></div>
+        <div class="gbar-f" style="width:${fp}%"></div>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:.15rem">
         <span style="font-size:.52rem;color:var(--muted)">♂ ${mp}%</span>
-        <span style="font-size:.52rem;color:var(--muted)">♀ ${100-mp}%</span>
+        <span style="font-size:.52rem;color:var(--muted)">♀ ${fp}%</span>
       </div>` : ''}`;
     grid.appendChild(div);
   });
 }
 
-// ─── GO ────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+// GO
+// ═══════════════════════════════════════════════════════════════
 main().catch(e =>
   document.querySelectorAll('.loading').forEach(el =>
     el.innerHTML = `<div class="err">⚠ ${e.message}</div>`));
