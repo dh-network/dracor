@@ -72,26 +72,25 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-ser
 .rtable tr:last-child td{border-bottom:none}
 .rbar{height:5px;background:var(--teal-lt);border-radius:3px}
 
-/* ── Corpus Browser grid ── */
-.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:.55rem;max-height:380px;overflow-y:auto}
-.ccard{border:1px solid var(--border);border-radius:7px;padding:.65rem .75rem;background:#FAFCFD;position:relative;overflow:hidden;transition:border .12s,background .12s}
-.ccard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--teal);opacity:0;transition:opacity .12s}
-.ccard:hover{border-color:var(--teal);background:var(--teal-bg)}
-.ccard:hover::before{opacity:1}
-.cc-acro{font-family:'Source Serif 4',serif;font-size:.8rem;font-weight:600;color:var(--teal);margin-bottom:.08rem}
-.cc-title{font-size:.65rem;color:var(--navy);font-weight:600;margin-bottom:.4rem;line-height:1.3}
-.cc-stats{display:flex;gap:.7rem;flex-wrap:wrap}
-.cc-s{display:flex;flex-direction:column}
-.cc-n{font-size:.82rem;font-weight:700;color:var(--navy);line-height:1;font-variant-numeric:tabular-nums}
-.cc-l{font-size:.52rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.gbar{height:4px;background:#E0ECF0;border-radius:2px;margin-top:.55rem;overflow:hidden;display:flex}
-.gbar-m{background:var(--navy)}.gbar-f{background:var(--teal-lt)}
+/* ── Character Stats ── */
+.cs-grid{display:flex;flex-direction:column;gap:.3rem}
+.cs-row{display:flex;align-items:center;gap:.75rem;padding:.45rem .5rem;border-radius:6px;background:#FAFCFD;border:1px solid var(--border);transition:background .1s}
+.cs-row:hover{background:var(--teal-bg);border-color:var(--teal)}
+.cs-icon{font-size:1.1rem;flex-shrink:0;width:1.4rem;text-align:center}
+.cs-info{flex:1;min-width:0}
+.cs-label{font-size:.67rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);line-height:1}
+.cs-name{font-size:.82rem;font-weight:700;color:var(--navy);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-play-wrap{display:flex;align-items:baseline;gap:.35rem;margin-top:.08rem}
+.cs-play{font-size:.72rem;color:var(--teal);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-author{font-size:.62rem;color:var(--muted);white-space:nowrap}
+.cs-value{font-size:.82rem;font-weight:700;color:var(--navy);white-space:nowrap;font-variant-numeric:tabular-nums}
+
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="logo">Dra<span>Cor</span></div>
+  <div class="logo">Dra<span>Cor</span> Explorer</div>
   <div class="tagline">All data fetched live from dracor.org/api/v1</div>
   <div class="hstats">
     <div class="hs"><div class="hs-v" id="hP">—</div><div class="hs-l">Plays</div></div>
@@ -107,8 +106,8 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-ser
       <div><div class="card-title">Corpora at a Glance</div><div class="card-sub">Plays per corpus</div></div>
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
-    <div class="card" id="card-gender">
-      <div><div class="card-title">Gender Balance</div><div class="card-sub">Characters by gender — select corpus</div></div>
+    <div class="card" id="card-authors">
+      <div><div class="card-title">Most Prolific Authors</div><div class="card-sub">Select corpus</div></div>
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
   </div>
@@ -116,46 +115,29 @@ body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',sans-ser
   <div class="card" id="card-chrono">
     <div>
       <div class="card-title">Chronological Distribution</div>
-      <div class="card-sub">Plays per 25-year bin — fetched live via <code style="font-size:.64rem">GET /corpora/{name}</code> — toggle corpora</div>
+      <div class="card-sub">Plays per 25-year bin — toggle corpora</div>
     </div>
     <div class="loading"><div class="spinner"></div>Loading…</div>
   </div>
 
   <div class="row2">
-    <div class="card" id="card-authors">
-      <div><div class="card-title">Most Prolific Authors</div><div class="card-sub">Select corpus</div></div>
+    <div class="card" id="card-gender">
+      <div><div class="card-title">Character Gender Balance</div><div class="card-sub">Characters by gender — select corpus</div></div>
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
-    <div class="card" id="card-browser">
-      <div><div class="card-title">Corpus Browser</div><div class="card-sub">All corpora — live metrics</div></div>
+    <div class="card" id="card-chars">
+      <div><div class="card-title">Character Statistics</div><div class="card-sub">Extreme character metadata — select corpus</div></div>
       <div class="loading"><div class="spinner"></div>Loading…</div>
     </div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// API
-// The /corpora endpoint returns { corpora: [...] }
-// Each corpus has metrics as FLAT numbers:
-//   metrics.plays      → total play count
-//   metrics.characters → total character count
-//   metrics.male       → male character count
-//   metrics.female     → female character count
-//   metrics.wordcount.sp → spoken word count
-//
-// /corpora/{name} returns { plays: [{yearNormalized, authors:[{name}], ...}] }
-// ═══════════════════════════════════════════════════════════════
-
 const BASE = 'https://dracor.org/api/v1';
-
-const PAL = [
-  '#283B4C','#39A3B1','#E67E22','#8E44AD','#27AE60','#C0392B',
+const PAL = ['#283B4C','#39A3B1','#E67E22','#8E44AD','#27AE60','#C0392B',
   '#2980B9','#D4AC0D','#16A085','#884EA0','#E74C3C','#1ABC9C',
   '#F39C12','#9B59B6','#3498DB','#1A5276','#117A65','#784212',
-  '#4A235A','#0E6655','#6E2F1A','#1B4F72','#7D6608','#78281F',
-  '#186A3B','#512E5F','#117A65'
-];
+  '#4A235A','#0E6655','#6E2F1A','#1B4F72','#7D6608','#78281F','#186A3B','#512E5F'];
 
 async function apiFetch(path) {
   const r = await fetch(BASE + path, { headers: { Accept: 'application/json' } });
@@ -163,425 +145,352 @@ async function apiFetch(path) {
   return r.json();
 }
 
-// ── metric accessors (flat structure confirmed from live API) ──
 const mPlays  = c => c.metrics?.plays      ?? 0;
 const mChars  = c => c.metrics?.characters ?? 0;
 const mMale   = c => c.metrics?.male       ?? 0;
 const mFemale = c => c.metrics?.female     ?? 0;
 const mWords  = c => c.metrics?.wordcount?.sp ?? 0;
+const fmtExact = n => (n || n === 0) ? Number(n).toLocaleString('en-US') : '—';
+const shortAcro = c => (c.acronym || c.name || '').replace(/DraCor$/i,'').toUpperCase() || (c.name||'').slice(0,5).toUpperCase();
 
-function fmtExact(n) {
-  if (!n && n !== 0) return '—';
-  return Number(n).toLocaleString('en-US');
+// ── Shared play-list cache (used by chrono, authors, char stats) ──
+const playCache = {};
+async function fetchPlayList(name) {
+  if (!playCache[name]) {
+    const data = await apiFetch(`/corpora/${name}`);
+    playCache[name] = data.plays ?? (Array.isArray(data) ? data : []);
+  }
+  return playCache[name];
 }
 
-function shortAcro(c) {
-  // Use the acronym field, strip "DraCor" suffix for display
-  const raw = c.acronym || c.name || '';
-  return raw.replace(/DraCor$/i, '').toUpperCase() || raw.slice(0,5).toUpperCase();
-}
-
-// ═══════════════════════════════════════════════════════════════
-// MAIN
-// ═══════════════════════════════════════════════════════════════
+// ── main ──
 async function main() {
   let corpora;
   try {
-    // NOTE: /corpora returns { corpora: [...] } — not a bare array
     const resp = await apiFetch('/corpora?include=metrics');
-    corpora = resp.corpora ?? resp; // handle both shapes for safety
+    corpora = (resp.corpora ?? resp).filter(c => c.name !== 'test');
+    corpora.sort((a,b) => mPlays(b) - mPlays(a));
   } catch(e) {
     document.querySelectorAll('.loading').forEach(el =>
       el.innerHTML = `<div class="err">⚠ Cannot reach DraCor API: ${e.message}</div>`);
     return;
   }
 
-  // Filter out test corpus, sort by play count desc
-  corpora = corpora.filter(c => c.name !== 'test');
-  corpora.sort((a, b) => mPlays(b) - mPlays(a));
-
-  // ── Header stats (exact numbers) ──
   const totalPlays = corpora.reduce((s,c) => s + mPlays(c), 0);
-  const totalChars = corpora.reduce((s,c) => s + mChars(c), 0);
-  const totalWords = corpora.reduce((s,c) => s + mWords(c), 0);
   document.getElementById('hP').textContent  = fmtExact(totalPlays);
   document.getElementById('hC').textContent  = corpora.length;
-  document.getElementById('hCh').textContent = fmtExact(totalChars);
-  document.getElementById('hW').textContent  = fmtExact(totalWords);
+  document.getElementById('hCh').textContent = fmtExact(corpora.reduce((s,c) => s + mChars(c), 0));
+  document.getElementById('hW').textContent  = fmtExact(corpora.reduce((s,c) => s + mWords(c), 0));
 
   buildPie(corpora);
   buildGender(corpora);
-  buildBrowser(corpora);
-  buildChrono(corpora);   // async, fetches play lists
-  buildAuthors(corpora);  // async, fetches play lists
+  buildAuthors(corpora);
+  buildChrono(corpora);
+  buildChars(corpora);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 1. PIE
-// ═══════════════════════════════════════════════════════════════
+// ── 1. PIE ──
 function buildPie(corpora) {
-  const top   = corpora.slice(0, 14);
-  const other = corpora.slice(14).reduce((s,c) => s + mPlays(c), 0);
-  const labels = [...top.map(c => c.title || c.name), ...(other ? ['Other'] : [])];
-  const data   = [...top.map(c => mPlays(c)),          ...(other ? [other]   : [])];
+  const top = corpora.slice(0,14), other = corpora.slice(14).reduce((s,c) => s+mPlays(c),0);
+  const labels = [...top.map(c=>c.title||c.name), ...(other?['Other']:[])];
+  const data   = [...top.map(c=>mPlays(c)),        ...(other?[other]:[])];
   const colors = PAL.slice(0, labels.length);
-
   document.getElementById('card-pie').innerHTML = `
     <div><div class="card-title">Corpora at a Glance</div><div class="card-sub">Plays per corpus</div></div>
     <div class="pie-wrap">
       <canvas id="pieCanvas" style="flex:0 0 200px;max-width:200px;max-height:200px"></canvas>
       <div class="pie-leg" id="pieLeg"></div>
     </div>`;
-
   new Chart(document.getElementById('pieCanvas'), {
-    type: 'pie',
-    data: { labels, datasets:[{ data, backgroundColor:colors, borderColor:'#fff', borderWidth:2, hoverOffset:6 }] },
-    options: {
-      animation: { duration:450 },
-      plugins: {
-        legend: { display:false },
-        tooltip: { backgroundColor:'#283B4C', callbacks:{ label: ctx => ` ${ctx.label}: ${ctx.parsed.toLocaleString()} plays` } }
-      }
-    }
+    type:'pie', data:{ labels, datasets:[{ data, backgroundColor:colors, borderColor:'#fff', borderWidth:2, hoverOffset:6 }] },
+    options:{ animation:{duration:450}, plugins:{ legend:{display:false},
+      tooltip:{backgroundColor:'#283B4C', callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed.toLocaleString()} plays`}} } }
   });
-
   const leg = document.getElementById('pieLeg');
-  labels.forEach((lbl, i) => {
-    const d = document.createElement('div');
-    d.className = 'li';
-    d.innerHTML = `<div class="li-dot" style="background:${colors[i]}"></div>
-      <span class="li-name">${lbl}</span>
-      <span class="li-val">${data[i].toLocaleString()}</span>`;
+  labels.forEach((lbl,i) => {
+    const d = document.createElement('div'); d.className='li';
+    d.innerHTML=`<div class="li-dot" style="background:${colors[i]}"></div><span class="li-name">${lbl}</span><span class="li-val">${data[i].toLocaleString()}</span>`;
     leg.appendChild(d);
   });
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 2. GENDER
-// Uses flat metrics.male / metrics.female / metrics.characters
-// ═══════════════════════════════════════════════════════════════
+// ── 2. GENDER ──
 function buildGender(corpora) {
   const card = document.getElementById('card-gender');
   card.innerHTML = `
-    <div><div class="card-title">Gender Balance</div><div class="card-sub">Characters by gender — select corpus</div></div>
-    <div class="chips" id="gChips"></div>
-    <div id="gViz"></div>`;
-
+    <div><div class="card-title">Character Gender Balance</div><div class="card-sub">Characters by gender — select corpus</div></div>
+    <div class="chips" id="gChips"></div><div id="gViz"></div>`;
   const chipsEl = document.getElementById('gChips');
   let active = corpora[0];
-
   corpora.forEach(c => {
     const btn = document.createElement('button');
-    btn.className = 'chip' + (c === active ? ' on' : '');
-    btn.textContent = shortAcro(c);
-    btn.title = c.title || c.name;
+    btn.className = 'chip'+(c===active?' on':'');
+    btn.textContent = shortAcro(c); btn.title = c.title||c.name;
     btn.onclick = () => {
-      chipsEl.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
-      btn.classList.add('on');
-      active = c;
-      renderGender(c);
+      chipsEl.querySelectorAll('.chip').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on'); active=c; renderGender(c);
     };
     chipsEl.appendChild(btn);
   });
-
   renderGender(active);
 }
 
-function genderBar(label, male, female, total) {
-  // total = metrics.characters (includes unknown/unspecified)
-  const unk  = Math.max(0, total - male - female);
-  const tot  = male + female + unk || 1;
-  const mp   = Math.round(male   / tot * 100);
-  const fp   = Math.round(female / tot * 100);
-  const up   = 100 - mp - fp;
-  const seg  = (pct, bg, txt) => pct > 0
-    ? `<div class="gv-seg" style="width:${pct}%;background:${bg}">${pct >= 10 ? `<span>${txt} ${pct}%</span>` : ''}</div>`
-    : '';
-  return `<div class="gv-block">
-    <div class="gv-label">${label}</div>
-    <div class="gv-track">
-      ${seg(mp,'#283B4C','♂')}${seg(fp,'#39A3B1','♀')}${seg(up,'#B0C8D0','?')}
-    </div>
+function renderGender(c) {
+  const viz = document.getElementById('gViz'); if (!viz) return;
+  const male=mMale(c), female=mFemale(c), total=mChars(c);
+  const unk=Math.max(0,total-male-female), tot=male+female+unk||1;
+  const mp=Math.round(male/tot*100), fp=Math.round(female/tot*100), up=100-mp-fp;
+  const seg=(pct,bg,txt)=>pct>0?`<div class="gv-seg" style="width:${pct}%;background:${bg}">${pct>=10?`<span>${txt} ${pct}%</span>`:''}</div>`:'';
+  viz.innerHTML=`<div class="gv-block">
+    <div class="gv-track">${seg(mp,'#283B4C','♂')}${seg(fp,'#39A3B1','♀')}${seg(up,'#B0C8D0','?')}</div>
     <div class="gv-legend">
       <span>♂ Male <strong>${fmtExact(male)} · ${mp}%</strong></span>
       <span>♀ Female <strong>${fmtExact(female)} · ${fp}%</strong></span>
-      ${unk > 0 ? `<span>? Unknown/Other <strong>${fmtExact(unk)} · ${up}%</strong></span>` : ''}
-    </div>
-  </div>`;
+      ${unk>0?`<span>? Unknown <strong>${fmtExact(unk)} · ${up}%</strong></span>`:''}
+    </div></div>`;
 }
 
-function renderGender(c) {
-  const viz = document.getElementById('gViz');
-  if (!viz) return;
-  // All three values come from flat metrics fields
-  viz.innerHTML = genderBar('Characters', mMale(c), mFemale(c), mChars(c));
+// ── 3. AUTHORS — uses shared playCache ──
+const authorCache = {};
+async function buildAuthors(corpora) {
+  const card = document.getElementById('card-authors');
+  card.innerHTML = `
+    <div><div class="card-title">Most Prolific Authors</div><div class="card-sub">Select corpus</div></div>
+    <div class="chips" id="authChips"></div>
+    <div id="authArea"><div class="loading"><div class="spinner"></div>Loading…</div></div>`;
+  const chipsEl = document.getElementById('authChips');
+  let activeName = corpora[0]?.name;
+  corpora.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chip'+(c.name===activeName?' on':'');
+    btn.textContent = shortAcro(c); btn.title = c.title||c.name;
+    btn.onclick = async () => {
+      chipsEl.querySelectorAll('.chip').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on'); activeName=c.name; await renderAuthors(c.name);
+    };
+    chipsEl.appendChild(btn);
+  });
+  await renderAuthors(activeName);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 3. CHRONOLOGICAL
-// Fetches /corpora/{name} → {plays:[{yearNormalized}]}
-// Bins plays into 25-year buckets from API data
-// ═══════════════════════════════════════════════════════════════
-const binCache     = {};   // corpusName → { "1600": 5, ... }
-const playCache    = {};   // corpusName → plays[]
-let   chronoChart  = null;
-let   chronoActive = new Set();
-let   gCorpora     = [];
-let   gChronoBtns  = {};
+async function renderAuthors(name) {
+  const area = document.getElementById('authArea'); if (!area) return;
+  if (!authorCache[name]) {
+    area.innerHTML = `<div class="loading"><div class="spinner"></div>Fetching…</div>`;
+    try {
+      const plays = await fetchPlayList(name);
+      const map = {};
+      plays.forEach(p => (p.authors||[]).forEach(a => {
+        const nm = a.name||a.fullname||(typeof a==='string'?a:null);
+        if (nm) map[nm] = (map[nm]||0)+1;
+      }));
+      authorCache[name] = Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    } catch(e) { area.innerHTML=`<div class="err">⚠ ${e.message}</div>`; return; }
+  }
+  const rows = authorCache[name];
+  if (!rows.length) { area.innerHTML=`<p style="color:var(--muted);font-size:.78rem;padding:.4rem">No author data.</p>`; return; }
+  const max = rows[0][1];
+  area.innerHTML = `<table class="rtable">
+    <thead><tr><th>#</th><th>Author</th><th style="text-align:right">Plays</th><th style="width:80px"></th></tr></thead>
+    <tbody>${rows.map(([nm,cnt],i)=>`<tr>
+      <td style="color:var(--muted);width:20px">${i+1}</td><td>${nm}</td>
+      <td style="text-align:right;font-weight:600">${cnt}</td>
+      <td><div class="rbar" style="width:${Math.round(cnt/max*100)}%"></div></td>
+    </tr>`).join('')}</tbody></table>`;
+}
 
-async function fetchPlayList(name) {
-  if (playCache[name]) return playCache[name];
-  const data = await apiFetch(`/corpora/${name}`);
-  // /corpora/{name} returns { plays: [...], ... }
-  const plays = data.plays ?? (Array.isArray(data) ? data : []);
-  playCache[name] = plays;
-  return plays;
+// ── 4. CHRONO — uses shared playCache ──
+const binCache = {}; let chronoChart=null, chronoActive=new Set(), gCorpora=[], gChronoBtns={};
+
+async function buildChrono(corpora) {
+  gCorpora = corpora;
+  corpora.slice(0,5).forEach(c=>chronoActive.add(c.name));
+  const card = document.getElementById('card-chrono');
+  card.innerHTML = `
+    <div><div class="card-title">Chronological Distribution</div><div class="card-sub">Plays per 25-year bin — toggle corpora</div></div>
+    <div class="chips" id="chronoChips"></div>
+    <div id="chronoArea" style="min-height:80px">
+      <div class="loading" id="chronoSpinner"><div class="spinner"></div>Fetching…</div>
+      <canvas id="chronoCanvas" height="110" style="display:none"></canvas>
+    </div>`;
+  const chipsEl = document.getElementById('chronoChips');
+  corpora.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className='chip'+(chronoActive.has(c.name)?' on':'');
+    btn.textContent=shortAcro(c); btn.title=`${c.title||c.name} (${mPlays(c)} plays)`;
+    gChronoBtns[c.name]=btn;
+    btn.onclick=async()=>{
+      chronoActive.has(c.name)?(chronoActive.delete(c.name),btn.classList.remove('on')):(chronoActive.add(c.name),btn.classList.add('on'));
+      await refreshChrono();
+    };
+    chipsEl.appendChild(btn);
+  });
+  await refreshChrono();
 }
 
 async function computeBins(name) {
   if (binCache[name]) return;
   const plays = await fetchPlayList(name);
-  const bins  = {};
+  const bins = {};
   plays.forEach(p => {
-    const raw = p.yearNormalized ?? p.yearWritten ?? p.yearPrinted ?? p.yearPremiered;
-    if (!raw) return;
-    const y = parseInt(raw, 10);
-    if (isNaN(y) || y <= 0 || y > 2100) return;
-    const key = String(Math.floor(y / 25) * 25);
-    bins[key] = (bins[key] || 0) + 1;
+    const y = parseInt(p.yearNormalized??p.yearWritten??p.yearPrinted??p.yearPremiered, 10);
+    if (!isNaN(y) && y>0 && y<=2100) { const k=String(Math.floor(y/25)*25); bins[k]=(bins[k]||0)+1; }
   });
   binCache[name] = bins;
 }
 
-async function buildChrono(corpora) {
-  gCorpora = corpora;
-  corpora.slice(0, 5).forEach(c => chronoActive.add(c.name));
-
-  const card = document.getElementById('card-chrono');
-  card.innerHTML = `
-    <div>
-      <div class="card-title">Chronological Distribution</div>
-      <div class="card-sub">Plays per 25-year bin — fetched live via <code style="font-size:.64rem">GET /corpora/{name}</code> — toggle corpora</div>
-    </div>
-    <div class="chips" id="chronoChips"></div>
-    <div id="chronoArea" style="min-height:80px">
-      <div class="loading" id="chronoSpinner"><div class="spinner"></div>Fetching play data…</div>
-      <canvas id="chronoCanvas" height="110" style="display:none"></canvas>
-    </div>`;
-
-  const chipsEl = document.getElementById('chronoChips');
-  corpora.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = 'chip' + (chronoActive.has(c.name) ? ' on' : '');
-    btn.textContent = shortAcro(c);
-    btn.title = `${c.title || c.name} (${mPlays(c)} plays)`;
-    gChronoBtns[c.name] = btn;
-    btn.onclick = async () => {
-      if (chronoActive.has(c.name)) { chronoActive.delete(c.name); btn.classList.remove('on'); }
-      else                          { chronoActive.add(c.name);    btn.classList.add('on'); }
-      await refreshChrono();
-    };
-    chipsEl.appendChild(btn);
-  });
-
-  await refreshChrono();
-}
-
 async function refreshChrono() {
-  const spinner = document.getElementById('chronoSpinner');
-  const canvas  = document.getElementById('chronoCanvas');
-  if (!spinner || !canvas) return;
-
-  Object.values(gChronoBtns).forEach(b => b.disabled = true);
-  spinner.style.display = 'flex';
-  canvas.style.display  = 'none';
-
-  try {
-    await Promise.all([...chronoActive].map(n => computeBins(n)));
-  } catch(e) {
-    spinner.innerHTML = `<div class="err">⚠ ${e.message}</div>`;
-    Object.values(gChronoBtns).forEach(b => b.disabled = false);
-    return;
-  }
-
-  // Gather all bin keys that appear in any active corpus
-  const allKeys = new Set();
-  [...chronoActive].forEach(n => Object.keys(binCache[n] || {}).forEach(k => allKeys.add(k)));
-  const sortedKeys = [...allKeys].sort((a,b) => +a - +b);
-  const labels     = sortedKeys.map(k => `${k}–${+k+24}`);
-
-  const datasets = [...chronoActive].map(name => {
-    const idx   = gCorpora.findIndex(c => c.name === name);
-    const color = PAL[idx % PAL.length];
-    return {
-      label:           shortAcro(gCorpora[idx]),
-      data:            sortedKeys.map(k => binCache[name]?.[k] || 0),
-      borderColor:     color,
-      backgroundColor: color + '22',
-      borderWidth: 2, pointRadius: 3, tension: 0.35, fill: false
-    };
+  const spinner=document.getElementById('chronoSpinner'), canvas=document.getElementById('chronoCanvas');
+  if (!spinner||!canvas) return;
+  Object.values(gChronoBtns).forEach(b=>b.disabled=true);
+  spinner.style.display='flex'; canvas.style.display='none';
+  try { await Promise.all([...chronoActive].map(n=>computeBins(n))); }
+  catch(e) { spinner.innerHTML=`<div class="err">⚠ ${e.message}</div>`; Object.values(gChronoBtns).forEach(b=>b.disabled=false); return; }
+  const allKeys=new Set();
+  [...chronoActive].forEach(n=>Object.keys(binCache[n]||{}).forEach(k=>allKeys.add(k)));
+  const sortedKeys=[...allKeys].sort((a,b)=>+a-+b);
+  const datasets=[...chronoActive].map(name=>{
+    const idx=gCorpora.findIndex(c=>c.name===name), color=PAL[idx%PAL.length];
+    return { label:shortAcro(gCorpora[idx]), data:sortedKeys.map(k=>binCache[name]?.[k]||0),
+      borderColor:color, backgroundColor:color+'22', borderWidth:2, pointRadius:3, tension:0.35, fill:false };
   });
-
-  spinner.style.display = 'none';
-  canvas.style.display  = 'block';
-
+  spinner.style.display='none'; canvas.style.display='block';
   if (chronoChart) chronoChart.destroy();
   chronoChart = new Chart(canvas.getContext('2d'), {
-    type: 'line',
-    data: { labels, datasets },
-    options: {
-      responsive: true, animation: { duration: 350 },
-      plugins: {
-        legend: { position:'top', labels:{ boxWidth:10, font:{size:11} } },
-        tooltip: { backgroundColor:'#283B4C', titleColor:'#fff', bodyColor:'#fff', padding:8, cornerRadius:6 }
-      },
-      scales: {
-        x: { grid:{ color:'rgba(0,0,0,.05)' }, ticks:{ font:{size:10}, maxRotation:50 } },
-        y: { beginAtZero:true, grid:{ color:'rgba(0,0,0,.05)' }, ticks:{ font:{size:10} } }
-      }
-    }
+    type:'line', data:{ labels:sortedKeys.map(k=>`${k}–${+k+24}`), datasets },
+    options:{ responsive:true, animation:{duration:350},
+      plugins:{ legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},
+        tooltip:{backgroundColor:'#283B4C',padding:8,cornerRadius:6} },
+      scales:{ x:{grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{size:10},maxRotation:50}},
+               y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{size:10}}} } }
   });
-
-  Object.values(gChronoBtns).forEach(b => b.disabled = false);
+  Object.values(gChronoBtns).forEach(b=>b.disabled=false);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 4. AUTHORS
-// Fetches /corpora/{name} → plays[].authors[].name
-// ═══════════════════════════════════════════════════════════════
-const authorCache = {};
+// ── 5. CHARACTER STATS ──
+// Uses shared playCache for play-level extremes (networkSize, wordCountSp etc. NOT available there).
+// Play list from /corpora/{name} only has: name, title, authors, yearNormalized, networkSize.
+// Extremes requiring per-character data (top speaker, top degree) resolved via Promise.all —
+// two parallel char fetches on the identified extreme plays.
+// All other extremes (density, diameter, numOfSpeakers) require /metadata — fetched once, cached.
+const charStatsCache = {}, metaCache = {};
 
-async function buildAuthors(corpora) {
-  const card = document.getElementById('card-authors');
+async function fetchMeta(name) {
+  if (!metaCache[name]) {
+    const data = await apiFetch(`/corpora/${name}/metadata`);
+    metaCache[name] = Array.isArray(data) ? data : (data.plays ?? []);
+  }
+  return metaCache[name];
+}
+
+function buildChars(corpora) {
+  const card = document.getElementById('card-chars');
   card.innerHTML = `
-    <div><div class="card-title">Most Prolific Authors</div><div class="card-sub">Select corpus — fetched live</div></div>
-    <div class="chips" id="authChips"></div>
-    <div id="authArea"><div class="loading"><div class="spinner"></div>Loading…</div></div>`;
-
-  const chipsEl = document.getElementById('authChips');
-  let activeName = corpora[0]?.name;
-
+    <div><div class="card-title">Character Statistics</div><div class="card-sub">Outlier character metadata — select corpus</div></div>
+    <div class="chips" id="csChips"></div>
+    <div id="csBody"><div class="loading"><div class="spinner"></div>Loading…</div></div>`;
+  const chipsEl = document.getElementById('csChips');
+  document.getElementById('csBody').innerHTML = `<p style="color:var(--muted);font-size:.78rem;padding:.5rem 0">Select a corpus to load character statistics.</p>`;
   corpora.forEach(c => {
     const btn = document.createElement('button');
-    btn.className = 'chip' + (c.name === activeName ? ' on' : '');
-    btn.textContent = shortAcro(c);
-    btn.title = c.title || c.name;
+    btn.className = 'chip';
+    btn.textContent = shortAcro(c); btn.title = c.title||c.name;
     btn.onclick = async () => {
-      chipsEl.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
-      btn.classList.add('on');
-      activeName = c.name;
-      await renderAuthors(c.name);
+      chipsEl.querySelectorAll('.chip').forEach(b=>b.classList.remove('on'));
+      btn.classList.add('on'); await renderChars(c.name);
     };
     chipsEl.appendChild(btn);
   });
-
-  await renderAuthors(activeName);
 }
 
-async function renderAuthors(name) {
-  const area = document.getElementById('authArea');
-  if (!area) return;
+async function renderChars(corpusName) {
+  const area = document.getElementById('csBody'); if (!area) return;
+  if (charStatsCache[corpusName]) { renderCharRows(charStatsCache[corpusName]); return; }
+  area.innerHTML = `<div class="loading"><div class="spinner"></div>Loading…</div>`;
 
-  if (!authorCache[name]) {
-    area.innerHTML = `<div class="loading"><div class="spinner"></div>Fetching…</div>`;
-    try {
-      const plays = await fetchPlayList(name);
-      const map   = {};
-      plays.forEach(p => {
-        (p.authors || []).forEach(a => {
-          // API returns authors as [{name: "Surname, Firstname", shortname: "Surname", ...}]
-          const nm = a.name || a.fullname || (typeof a === 'string' ? a : null);
-          if (nm) map[nm] = (map[nm] || 0) + 1;
-        });
-      });
-      authorCache[name] = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0, 15);
-    } catch(e) {
-      area.innerHTML = `<div class="err">⚠ ${e.message}</div>`;
-      return;
+  let plays;
+  try { plays = await fetchMeta(corpusName); }
+  catch(e) { area.innerHTML=`<div class="err">⚠ ${e.message}</div>`; return; }
+  if (!plays.length) { area.innerHTML=`<p style="color:var(--muted);font-size:.78rem">No data.</p>`; return; }
+
+  const top = (field, desc=true) => {
+    let best=null;
+    for (const p of plays) {
+      if (p[field]==null) continue;
+      if (!best || (desc ? p[field]>best[field] : p[field]<best[field])) best=p;
     }
-  }
+    return best;
+  };
 
-  const rows = authorCache[name];
-  if (!rows.length) {
-    area.innerHTML = `<p style="color:var(--muted);font-size:.78rem;padding:.4rem">No author data found.</p>`;
-    return;
-  }
+  // Identify extreme plays from metadata — O(n) passes, no sorting
+  const mostSpeakers   = top('numOfSpeakers');
+  const fewestSpeakers = top('numOfSpeakers', false);
+  const highestDensity = top('density');
+  const lowestDensity  = top('density', false);
+  const largestDiam    = top('diameter');
+  const longestPlay    = top('wordCountSp');
+  const mostConnected  = top('maxDegree');
 
-  const max = rows[0][1];
-  area.innerHTML = `
-    <table class="rtable">
-      <thead><tr><th>#</th><th>Author</th><th style="text-align:right">Plays</th><th style="width:80px"></th></tr></thead>
-      <tbody>${rows.map(([nm, cnt], i) => `
-        <tr>
-          <td style="color:var(--muted);width:20px">${i+1}</td>
-          <td>${nm}</td>
-          <td style="text-align:right;font-weight:600">${cnt}</td>
-          <td><div class="rbar" style="width:${Math.round(cnt/max*100)}%"></div></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
+  // Fetch characters for the two char-level extreme plays IN PARALLEL
+  const getIndivChars = async (playName) => {
+    const data = await apiFetch(`/corpora/${corpusName}/plays/${playName}/characters`);
+    const arr = data.characters ?? (Array.isArray(data) ? data : []);
+    return arr.filter(c => !c.isGroup);
+  };
+
+  const needBoth = longestPlay && mostConnected && longestPlay.name !== mostConnected.name;
+  const needOne  = longestPlay && mostConnected && longestPlay.name === mostConnected.name;
+
+  let topSpeaker=null, topDegreeChar=null;
+  try {
+    if (needBoth) {
+      const [lChars, mChars] = await Promise.all([
+        getIndivChars(longestPlay.name),
+        getIndivChars(mostConnected.name)
+      ]);
+      topSpeaker    = lChars.reduce((b,c)=>c.numOfWords>b.numOfWords?c:b, lChars[0]) ?? null;
+      topDegreeChar = mChars.reduce((b,c)=>c.degree>b.degree?c:b, mChars[0])         ?? null;
+    } else if (needOne) {
+      const chars = await getIndivChars(longestPlay.name);
+      topSpeaker    = chars.reduce((b,c)=>c.numOfWords>b.numOfWords?c:b, chars[0]) ?? null;
+      topDegreeChar = chars.reduce((b,c)=>c.degree>b.degree?c:b, chars[0])         ?? null;
+    }
+  } catch(e) { area.innerHTML=`<div class="err">⚠ ${e.message}</div>`; return; }
+
+  const pLink = p => `<span class="cs-play">${p.title}</span><span class="cs-author">${p.firstAuthor??''}</span>`;
+
+  const rows = [
+    topSpeaker&&longestPlay  ? { icon:'💬', label:'Most words spoken',       value:topSpeaker.numOfWords.toLocaleString()+' words',  detail:topSpeaker.name,    play:pLink(longestPlay)    } : null,
+    topSpeaker&&longestPlay  ? { icon:'🎭', label:'Most speech acts',         value:topSpeaker.numOfSpeechActs+' acts',               detail:topSpeaker.name,    play:pLink(longestPlay)    } : null,
+    topDegreeChar&&mostConnected?{icon:'🔗',label:'Highest network degree',   value:'degree '+topDegreeChar.degree,                   detail:topDegreeChar.name, play:pLink(mostConnected)  } : null,
+    mostSpeakers             ? { icon:'👥', label:'Most characters on stage', value:mostSpeakers.numOfSpeakers+' characters',         detail:null,               play:pLink(mostSpeakers)   } : null,
+    fewestSpeakers           ? { icon:'🎙', label:'Fewest characters',        value:fewestSpeakers.numOfSpeakers+' characters',       detail:null,               play:pLink(fewestSpeakers) } : null,
+    highestDensity           ? { icon:'🌐', label:'Densest network',          value:'density '+highestDensity.density.toFixed(3),     detail:null,               play:pLink(highestDensity) } : null,
+    lowestDensity            ? { icon:'🏝', label:'Sparsest network',         value:'density '+lowestDensity.density.toFixed(3),      detail:null,               play:pLink(lowestDensity)  } : null,
+    largestDiam              ? { icon:'↔',  label:'Largest network diameter', value:'diameter '+largestDiam.diameter,                 detail:null,               play:pLink(largestDiam)    } : null,
+  ].filter(Boolean);
+
+  charStatsCache[corpusName] = rows;
+  renderCharRows(rows);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 5. CORPUS BROWSER
-// All data from the /corpora?include=metrics call — no extra fetches
-// ═══════════════════════════════════════════════════════════════
-function buildBrowser(corpora) {
-  const card = document.getElementById('card-browser');
-  card.innerHTML = `
-    <div><div class="card-title">Corpus Browser</div><div class="card-sub">All corpora — live metrics from API</div></div>
-    <div class="cgrid" id="cgrid"></div>`;
-
-  const grid = document.getElementById('cgrid');
-  corpora.forEach(c => {
-    const plays  = mPlays(c);
-    const chars  = mChars(c);
-    const male   = mMale(c);
-    const female = mFemale(c);
-    const words  = mWords(c);
-    const tot    = male + female || 1;
-    const mp     = Math.round(male   / tot * 100);
-    const fp     = 100 - mp;
-    const hasG   = male > 0 || female > 0;
-
-    const div = document.createElement('div');
-    div.className = 'ccard';
-    div.innerHTML = `
-      <div class="cc-acro">${shortAcro(c)}</div>
-      <div class="cc-title">${c.title || c.name}</div>
-      <div class="cc-stats">
-        <div class="cc-s">
-          <div class="cc-n">${plays.toLocaleString()}</div>
-          <div class="cc-l">plays</div>
-        </div>
-        <div class="cc-s">
-          <div class="cc-n">${chars.toLocaleString()}</div>
-          <div class="cc-l">chars</div>
-        </div>
-        ${words ? `<div class="cc-s">
-          <div class="cc-n">${words >= 1e6 ? (words/1e6).toFixed(1)+'M' : words >= 1e3 ? (words/1e3).toFixed(0)+'k' : words}</div>
-          <div class="cc-l">words</div>
-        </div>` : ''}
+function renderCharRows(rows) {
+  const area = document.getElementById('csBody'); if (!area) return;
+  area.innerHTML = `<div class="cs-grid">${rows.map(r=>`
+    <div class="cs-row">
+      <div class="cs-icon">${r.icon}</div>
+      <div class="cs-info">
+        <div class="cs-label">${r.label}</div>
+        ${r.detail?`<div class="cs-name">${r.detail}</div>`:''}
+        <div class="cs-play-wrap">${r.play}</div>
       </div>
-      ${hasG ? `
-      <div class="gbar">
-        <div class="gbar-m" style="width:${mp}%"></div>
-        <div class="gbar-f" style="width:${fp}%"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:.15rem">
-        <span style="font-size:.52rem;color:var(--muted)">♂ ${mp}%</span>
-        <span style="font-size:.52rem;color:var(--muted)">♀ ${fp}%</span>
-      </div>` : ''}`;
-    grid.appendChild(div);
-  });
+      <div class="cs-value">${r.value}</div>
+    </div>`).join('')}</div>`;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// GO
-// ═══════════════════════════════════════════════════════════════
 main().catch(e =>
   document.querySelectorAll('.loading').forEach(el =>
-    el.innerHTML = `<div class="err">⚠ ${e.message}</div>`));
+    el.innerHTML=`<div class="err">⚠ ${e.message}</div>`));
 </script>
 </body>
 </html>
